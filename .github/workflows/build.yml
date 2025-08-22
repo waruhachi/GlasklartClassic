@@ -62,7 +62,7 @@ jobs:
             - name: Upload prepared directories
               uses: actions/upload-artifact@v4
               with:
-                name: directories
+                name: directories-${{ matrix.scheme }}
                 path: |
                   ${{ matrix.scheme }}.zip
     
@@ -80,7 +80,7 @@ jobs:
           - name: Download prepared directories
             uses: actions/download-artifact@v4
             with:
-              name: directories
+              name: directories-${{ matrix.scheme }}
               path: .
 
           - name: Unzip ${{ matrix.scheme }} folder
