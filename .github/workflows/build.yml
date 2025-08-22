@@ -55,12 +55,16 @@ jobs:
                 cp layout/DEBIAN/control ${{ matrix.scheme }}/layout/DEBIAN/control
                 cp -r Theme/* ${{ matrix.scheme }}/var/jb/Library/Themes/
 
+            - name: Zip ${{ matrix.scheme }} folder
+              run: |
+                zip -r ${{ matrix.scheme }}.zip ${{ matrix.scheme }}/*
+
             - name: Upload prepared directories
               uses: actions/upload-artifact@v4
               with:
                 name: directories
                 path: |
-                  ${{ matrix.scheme }}
+                  ${{ matrix.scheme }}.zip
     
     package:
         name: Package Theme
@@ -79,10 +83,15 @@ jobs:
               name: directories
               path: .
 
+          - name: Unzip ${{ matrix.scheme }} folder
+            run: |
+              unzip ${{ matrix.scheme }}.zip
+
           - name: Package ${{ matrix.scheme }}
             run: |
               cd ${{ matrix.scheme }}
               dpkg-deb -b . ../themes/$BUNDLE_ID-$VERSION-iphoneos-arm.deb
+              cd ..
 
           - name: Upload Themes
             uses: actions/upload-artifact@v4
