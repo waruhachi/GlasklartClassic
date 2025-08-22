@@ -33,27 +33,29 @@ jobs:
                 echo "bundle_id=${BUNDLE_ID}" >> "$GITHUB_OUTPUT"
                 echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
-            - name: Make ${{ matrix.scheme }} folder
+            - name: Prepare rootful directory
+              if: matrix.scheme == 'rootful'
               run: |
                 mkdir -p ${{ matrix.scheme }}
-                mkdir -p ${{ matrix.scheme }}/layout/DEBIAN
+                mkdir -p ${{ matrix.scheme }}/DEBIAN
                 mkdir -p ${{ matrix.scheme }}/Library/Themes
 
-                cp layout/DEBIAN/control ${{ matrix.scheme }}/layout/DEBIAN/control
+                cp layout/DEBIAN/control ${{ matrix.scheme }}/DEBIAN/control
                 cp -r Theme/* ${{ matrix.scheme }}/Library/Themes/
-                
-            - name: Make ${{ matrix.scheme }} folder
+
+            - name: Prepare rootless directory
+              if: matrix.scheme == 'rootless'
               run: |
                 mkdir -p ${{ matrix.scheme }}
-                mkdir -p ${{ matrix.scheme }}/layout/DEBIAN
+                mkdir -p ${{ matrix.scheme }}/DEBIAN
                 mkdir -p ${{ matrix.scheme }}/var/jb/Library/Themes
 
-                cp layout/DEBIAN/control ${{ matrix.scheme }}/layout/DEBIAN/control
+                cp layout/DEBIAN/control ${{ matrix.scheme }}/DEBIAN/control
                 cp -r Theme/* ${{ matrix.scheme }}/var/jb/Library/Themes/
 
             - name: Zip ${{ matrix.scheme }} folder
               run: |
-                zip -r ${{ matrix.scheme }}.zip ${{ matrix.scheme }}/*
+                zip -r ${{ matrix.scheme }}.zip ${{ matrix.scheme }}/
 
             - name: Upload prepared directories
               uses: actions/upload-artifact@v4
@@ -90,7 +92,9 @@ jobs:
           - name: Package ${{ matrix.scheme }}
             run: |
               cd ${{ matrix.scheme }}
-              dpkg-deb -b . ../themes/$BUNDLE_ID-$VERSION-iphoneos-arm.deb
+              mkdir -p ../themes
+              if [ "${{ matrix.scheme }}" = "rootless" ]; then ARCH="iphoneos-arm64"; else ARCH="iphoneos-arm"; fi
+              dpkg-deb -b . ../themes/$BUNDLE_ID-$VERSION-$ARCH.deb
               cd ..
 
           - name: Upload Themes
