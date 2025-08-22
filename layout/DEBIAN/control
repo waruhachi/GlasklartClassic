@@ -1,0 +1,9 @@
+Package: com.maxrudberg.glasklart.classic
+Name: GlasklartClassic
+Version: 1.0.0
+Architecture: iphoneos-arm
+Section: Themes
+Depends: com.spark.snowboard | com.anemonetheming.anemone
+Maintainer: waruhachi
+Author: Max Rudberg <maxrudberg@gmail.com>
+Description: The Classic Glasklart Theme
