@@ -40,7 +40,7 @@ jobs:
                 mkdir -p ${{ matrix.scheme }}/Library/Themes
 
                 cp layout/DEBIAN/control ${{ matrix.scheme }}/layout/DEBIAN/control
-                cp -r Theme ${{ matrix.scheme }}/Library/Themes/
+                cp -r Theme/* ${{ matrix.scheme }}/Library/Themes/
                 
             - name: Make ${{ matrix.scheme }} folder
               run: |
