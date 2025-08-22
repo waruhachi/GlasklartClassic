@@ -33,6 +33,10 @@ jobs:
                 echo "bundle_id=${BUNDLE_ID}" >> "$GITHUB_OUTPUT"
                 echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
+            - name: Install dpkg
+              run: |
+                brew install dpkg
+
             - name: Make ${{ matrix.scheme }} folder
               run: |
                 mkdir -p ${{ matrix.scheme }}
@@ -50,10 +54,6 @@ jobs:
 
                 cp layout/DEBIAN/control ${{ matrix.scheme }}/layout/DEBIAN/control
                 cp -r Theme/* ${{ matrix.scheme }}/var/jb/Library/Themes/
-
-            - name: Install dpkg
-              run: |
-                brew install dpkg
 
             - name: Upload prepared directories
               uses: actions/upload-artifact@v4
